@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIẾN TÀI TỬ 🇻🇳 - HỆ THỐNG THI TRẮC NGHIỆM TRỰC TUYẾN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --accent: #eff6ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* KHUNG XANH TRÊN CÙNG */
+        header {
+            background: linear-gradient(135deg, #1e40af, #2563eb);
+            color: white;
+            padding: 36px 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .author-name {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .portal-title {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: 0.95;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px 16px;
+            flex: 1;
+        }
+
+        /* THANH TÌM KIẾM & NÚT "TẤT CẢ" */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .category-filters {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            background: var(--primary);
+            color: white;
+            border: 1px solid var(--primary);
+            padding: 8px 22px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        }
+
+        /* KHU VỰC THẺ BÀI THI */
+        .exam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .exam-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-tag {
+            align-self: flex-start;
+            background: var(--accent);
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-bottom: 18px;
+        }
+
+        .card-btn {
+            display: block;
+            text-align: center;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 11px;
+            border-radius: 10px;
+            transition: background 0.2s;
+        }
+
+        .card-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        /* TRẠNG THÁI KHI CHƯA CÓ BÀI THI HOẶC KHÔNG TÌM THẤY */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-sub);
+            background: white;
+            border: 1px dashed var(--border);
+            border-radius: 16px;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* DÒNG CUỐI CÙNG */
+        footer {
+            text-align: center;
+            padding: 22px 16px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #475569;
+            border-top: 1px solid var(--border);
+            background: white;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- KHUNG XANH TRÊN CÙNG -->
+    <header>
+        <div class="author-name">TIẾN TÀI TỬ 🇻🇳</div>
+        <div class="portal-title">HỆ THỐNG THI TRẮC NGHIỆM TRỰC TUYẾN</div>
+    </header>
+
+    <div class="container">
+        <div class="controls">
+            <!-- Ô TÌM KIẾM -->
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm bài thi theo tên hoặc chuyên đề...">
+            </div>
+
+            <!-- CHỈ GIỮ LẠI NÚT "TẤT CẢ" -->
+            <div class="category-filters">
+                <button class="filter-btn">Tất cả</button>
+            </div>
+        </div>
+
+        <!-- DANH SÁCH BÀI THI (SẼ TỰ HIỆN KHI BẠN THÊM VÀO SCRIPT) -->
+        <div class="exam-grid" id="examGrid">
+            <!-- Render bài thi -->
+        </div>
+    </div>
+
+    <!-- DÒNG CHỮ DƯỚI CÙNG -->
+    <footer>
+        HỆ THỐNG THI TRẮC NGHIỆM TRỰC TUYẾN — TIẾN TÀI TỬ 🇻🇳
+    </footer>
+
+    <script>
+        // =========================================================================
+        // KHU VỰC THÊM BÀI THI MỚI:
+        // Hiện tại để trống []. Khi bạn có bài thi mới, xem hướng dẫn bên dưới để thêm!
+        // =========================================================================
+        const examList = [
+    {
+        title: "TRIỆU CHỨNG HỌC GHÉP NỐI TUẦM HOÀN VÀ HÔ HẤP",
+        category: "ĐỀ SỐ 1",
+        questions: 49,
+        duration: "60 phút",
+        date: "03/10/2026",
+        link: "https://incomparable-haupia-3aafe6.netlify.app/"
+    },
+    {
+        title: "TRIỆU CHỨNG HỌC GHÉP NỐI TIÊU HÓA VÀ TIẾT NIỆU",
+        category: "ĐỀ SỐ 2",
+        questions: 47,
+        duration: "60 phút",
+        date: "03/10/2026",
+        link: "https://cosmic-kitten-9626d5.netlify.app/"
+    },
+    {
+        title: "TRIỆU CHỨNG HỌC GHÉP NỐI THẦN KINH VÀ CHẤN THƯƠNG",
+        category: "ĐỀ SỐ 3",
+        questions: 40,
+        duration: "60 phút",
+        date: "03/10/2026",
+        link: "https://unique-brioche-209c3d.netlify.app/"
+    },
+    {
+        title: "BÀI NGHE TIẾNG ANH",
+        category: "ĐỀ SỐ 4",
+        questions: 50,
+        duration: "45 phút",
+        date: "03/10/2026",
+        link: "https://gorgeous-pasca-f01950.netlify.app/"
+    },
+];
+
+        // HIỂN THỊ DANH SÁCH BÀI THI
+        const examGrid = document.getElementById('examGrid');
+        const searchInput = document.getElementById('searchInput');
+
+        function renderExams(data) {
+            if (data.length === 0) {
+                examGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📂</div>
+                        <p>Hiện tại chưa có bài thi nào được cập nhật.</p>
+                        <span style="font-size: 13px; color: #94a3b8; margin-top: 4px; display: block;">Các bài thi mới sẽ xuất hiện tại đây khi được thêm vào hệ thống.</span>
+                    </div>
+                `;
+                return;
+            }
+
+            examGrid.innerHTML = data.map(exam => `
+                <div class="exam-card">
+                    <div>
+                        <span class="card-tag">${exam.category || 'Trắc nghiệm'}</span>
+                        <h2 class="card-title">${exam.title}</h2>
+                        <div class="card-meta">
+                            <span>📝 ${exam.questions} câu</span>
+                            <span>⏱️ ${exam.duration}</span>
+                            <span>📅 ${exam.date}</span>
+                        </div>
+                    </div>
+                    <a href="${exam.link}" target="_blank" class="card-btn">Vào thi ngay</a>
+                </div>
+            `).join('');
+        }
+
+        // TÌM KIẾM
+        searchInput.addEventListener('input', function() {
+            const keyword = this.value.toLowerCase().trim();
+            const filtered = examList.filter(exam => 
+                exam.title.toLowerCase().includes(keyword) || 
+                (exam.category && exam.category.toLowerCase().includes(keyword))
+            );
+            renderExams(filtered);
+        });
+
+        // Chạy khởi tạo ban đầu
+        renderExams(examList);
+    </script>
+</body>
+</html>
